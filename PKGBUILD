@@ -3,8 +3,8 @@
 # Maintained at https://github.com/rixx/pkgbuilds, feel free to submit patches
 
 pkgname=python311
-pkgver=3.11.9
-pkgrel=2
+pkgver=3.11.10
+pkgrel=0
 _pybasever=3.11
 _pymajver=3
 pkgdesc="Major release 3.11 of the Python high-level programming language"
@@ -12,13 +12,13 @@ arch=('i686' 'x86_64')
 license=('custom')
 url="https://www.python.org/"
 depends=('bzip2' 'expat' 'gdbm' 'libffi' 'libnsl' 'libxcrypt' 'openssl' 'zlib')
-makedepends=('bluez-libs' 'mpdecimal' 'gdb')
+makedepends=('boost-libs' 'mpdecimal' 'gdb')
 optdepends=('sqlite' 'mpdecimal: for decimal' 'xz: for lzma' 'tk: for tkinter')
 source=(https://www.python.org/ftp/python/${pkgver}/Python-${pkgver}.tar.xz)
-sha256sums=('9b1e896523fc510691126c864406d9360a3d1e986acbda59cda57b5abda45b87')
+sha256sums=('07a4356e912900e61a15cb0949a06c4a05012e213ecd6b4e84d0f67aabbee372')
 validpgpkeys=(
-    '0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'  # Ned Deily (Python release signing key) <nad@python.org>
-    'E3FF2839C048B25C084DEBE9B26995E310250568'  # Łukasz Langa (GPG langa.pl) <lukasz@langa.pl>
+  '0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D' # Ned Deily (Python release signing key) <nad@python.org>
+  'E3FF2839C048B25C084DEBE9B26995E310250568' # Łukasz Langa (GPG langa.pl) <lukasz@langa.pl>
 )
 provides=("python=$pkgver")
 
@@ -39,21 +39,23 @@ prepare() {
 build() {
   cd "${srcdir}/Python-${pkgver}"
 
-  CFLAGS="${CFLAGS} -fno-semantic-interposition"
+  CFLAGS="${CFLAGS} -fno-semantic-interposition -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
+  CFLAGS="${CFLAGS} -march=znver4 -mtune=znver4 -O3"
   ./configure \
-	       ax_cv_c_float_words_bigendian=no \
-              --prefix=/usr \
-              --enable-shared \
-              --with-computed-gotos \
-              --with-lto \
-              --enable-ipv6 \
-              --with-system-expat \
-              --with-dbmliborder=gdbm:ndbm \
-              --with-system-ffi \
-              --with-system-libmpdec \
-              --enable-loadable-sqlite-extensions \
-              --without-ensurepip \
-              --with-tzpath=/usr/share/zoneinfo
+    ax_cv_c_float_words_bigendian=no \
+    --prefix=/usr \
+    --enable-shared \
+    --with-computed-gotos \
+    --with-lto \
+    --enable-ipv6 \
+    --with-system-expat \
+    --with-dbmliborder=gdbm:ndbm \
+    --with-system-ffi \
+    --with-system-libmpdec \
+    --enable-loadable-sqlite-extensions \
+    --without-ensurepip \
+    --with-tzpath=/usr/share/zoneinfo \
+    --enable-optimizations
 
   make EXTRA_CFLAGS="$CFLAGS"
 }

@@ -1,12 +1,12 @@
 pkgbase = python311
 	pkgdesc = Major release 3.11 of the Python high-level programming language
-	pkgver = 3.11.9
-	pkgrel = 2
+	pkgver = 3.11.10
+	pkgrel = 0
 	url = https://www.python.org/
 	arch = i686
 	arch = x86_64
 	license = custom
-	makedepends = bluez-libs
+	makedepends = boost-libs
 	makedepends = mpdecimal
 	makedepends = gdb
 	depends = bzip2
@@ -21,10 +21,10 @@ pkgbase = python311
 	optdepends = mpdecimal: for decimal
 	optdepends = xz: for lzma
 	optdepends = tk: for tkinter
-	provides = python=3.11.9
-	source = https://www.python.org/ftp/python/3.11.9/Python-3.11.9.tar.xz
+	provides = python=3.11.10
+	source = https://www.python.org/ftp/python/3.11.10/Python-3.11.10.tar.xz
 	validpgpkeys = 0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D
 	validpgpkeys = E3FF2839C048B25C084DEBE9B26995E310250568
-	sha256sums = 9b1e896523fc510691126c864406d9360a3d1e986acbda59cda57b5abda45b87
+	sha256sums = 07a4356e912900e61a15cb0949a06c4a05012e213ecd6b4e84d0f67aabbee372
 
 pkgname = python311
