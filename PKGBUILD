@@ -4,16 +4,17 @@
 
 pkgname=python311
 pkgver=3.11.11
-pkgrel=0
+pkgrel=1
 _pybasever=3.11
 _pymajver=3
 pkgdesc="Major release 3.11 of the Python high-level programming language"
 arch=('i686' 'x86_64')
 license=('PSF-2.0')
 url="https://www.python.org/"
-depends=('bzip2' 'expat' 'gdbm' 'libffi' 'libnsl' 'libxcrypt' 'openssl' 'zlib' 'tzdata' 'mpdecimal')
-makedepends=('tk' 'sqlite' 'bluez-libs' 'llvm' 'gdb' 'xorg-server-xvfb' 'ttf-font')
-source=(https://www.python.org/ftp/python/${_pyver}/Python-${pkgver}.tar.xz)
+depends=('bzip2' 'expat' 'gdbm' 'libffi' 'libnsl' 'libxcrypt' 'openssl' 'zlib')
+makedepends=('bluez-libs' 'mpdecimal' 'gdb')
+optdepends=('sqlite' 'mpdecimal: for decimal' 'xz: for lzma' 'tk: for tkinter')
+source=(https://www.python.org/ftp/python/${pkgver}/Python-${pkgver}.tar.xz)
 sha256sums=('2a9920c7a0cd236de33644ed980a13cbbc21058bfdc528febb6081575ed73be3')
 validpgpkeys=(
     '0D96DF4D4110E5C43FBFB17F2D347EA6AA65421D'  # Ned Deily (Python release signing key) <nad@python.org>
@@ -40,7 +41,6 @@ build() {
 
   CFLAGS="${CFLAGS} -fno-semantic-interposition -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer"
   CFLAGS="${CFLAGS/-O2/-O3} -ffat-lto-objects"
-  CFLAGS="${CFLAGS} -march=znver4 -mtune=znver4"
   ./configure ax_cv_c_float_words_bigendian=no \
               --prefix=/usr \
               --enable-shared \
@@ -55,12 +55,7 @@ build() {
               --without-ensurepip \
               --with-tzpath=/usr/share/zoneinfo
 
-  # Obtain next free server number for xvfb-run; this even works in a chroot environment.
-  export servernum=99
-  while ! xvfb-run -a -n "$servernum" /bin/true 2>/dev/null; do servernum=$((servernum+1)); done
-
-  # Build
-  LC_CTYPE=en_US.UTF-8 xvfb-run -s "-screen 0 1920x1080x16 -ac +extension GLX" -a -n "$servernum" make EXTRA_CFLAGS="$CFLAGS"
+  make EXTRA_CFLAGS="$CFLAGS"
 }
 
 package() {
